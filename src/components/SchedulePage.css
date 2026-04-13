@@ -2,9 +2,27 @@
   min-height: 100vh;
   padding: 20px;
   background-color: #1a1a2e;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  position: relative;
+}
+
+.schedule-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.schedule-toolbar,
+.schedule-table-wrapper {
+  position: relative;
+  z-index: 1;
 }
 
 /* Toolbar */
@@ -44,15 +62,17 @@
 .sched-btn.bg-upload { background: linear-gradient(135deg, #43e97b, #667eea); }
 .sched-btn.rem-bg   { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
 .sched-btn.clear    { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
+.sched-btn.snapshot { background: linear-gradient(135deg, #f7971e, #ffd200); color: #1a1a2e !important; font-weight: 700; }
 
 /* Table wrapper */
 .schedule-table-wrapper {
-  background: rgba(255, 255, 255, 0.93);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 10px;
   padding: 24px;
-  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.4);
   overflow-x: auto;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(2px);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Title */
@@ -61,28 +81,30 @@
   width: 100%;
   margin: 0 0 16px 0;
   border: none;
-  border-bottom: 2px dashed #aaa;
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.5);
   outline: none;
   font-size: 26px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #fff;
   text-align: center;
   background: transparent;
   letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
 }
 
 .schedule-title-input:focus {
-  border-bottom-color: #667eea;
+  border-bottom-color: #a78bfa;
 }
 
 .schedule-title {
   margin: 0 0 16px 0;
   font-size: 26px;
   font-weight: 700;
-  color: #1a1a2e;
+  color: #fff;
   text-align: center;
   letter-spacing: 1px;
   display: none;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
 }
 
 .print-only {
@@ -98,14 +120,16 @@
 
 .schedule-table th,
 .schedule-table td {
-  border: 1px solid #ccc;
+  border: 1px solid rgba(255, 255, 255, 0.3);
   padding: 0;
   overflow: hidden;
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
 }
 
 /* Header */
 .schedule-table th {
-  background: #2d2b55;
+  background: rgba(26, 26, 46, 0.75);
   color: white;
   font-weight: 600;
   font-size: 14px;
@@ -200,21 +224,21 @@
   outline: none;
   background: transparent;
   font-size: 14px;
-  color: #1a1a2e;
+  color: #fff;
   padding: 10px 12px;
   font-family: inherit;
 }
 
 .schedule-table td input:focus {
-  background: #f0eeff;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .row-even {
-  background: #ffffff;
+  background: rgba(0, 0, 0, 0.3);
 }
 
 .row-odd {
-  background: #f4f3fc;
+  background: rgba(0, 0, 0, 0.45);
 }
 
 .schedule-table td.num-col,
@@ -225,8 +249,8 @@
 }
 
 .schedule-table td.num-col {
-  color: #888;
-  background: #efefef;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
 }
 
 /* Print */

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import html2canvas from 'html2canvas'
 import './SchedulePage.css'
 
 const DEFAULT_HEADERS = ['Date', 'Team 1', 'Time', 'Team 2']
@@ -14,6 +15,9 @@ const makeEmptyRow = (cols) => Array.from({ length: cols }, () => '')
 function SchedulePage() {
   const navigate = useNavigate()
   const bgInputRef = useRef(null)
+  const tableWrapperRef = useRef(null)
+  const pageRef = useRef(null)
+  const toolbarRef = useRef(null)
 
   const [bgImage, setBgImage] = useState(() => localStorage.getItem(BG_STORAGE_KEY) || null)
 
@@ -197,6 +201,61 @@ function SchedulePage() {
     })
   }
 
+  const handleSnapshot = async () => {
+    const page = pageRef.current
+    const toolbar = toolbarRef.current
+    const wrapper = tableWrapperRef.current
+    if (!page || !wrapper) return
+
+    // Hide toolbar
+    toolbar.style.display = 'none'
+
+    // Copy page background image onto the wrapper so it appears in the snapshot
+    const pageBgImage = page.style.backgroundImage
+    if (pageBgImage) {
+      wrapper.style.backgroundImage = pageBgImage
+      wrapper.style.backgroundSize = '100% 100%'
+      wrapper.style.backgroundRepeat = 'no-repeat'
+    } else {
+      wrapper.style.backgroundColor = '#1a1a2e'
+    }
+
+    // Remove backdrop-filter (not supported by html2canvas)
+    wrapper.style.backdropFilter = 'none'
+
+    // Expand overflow so full table width is captured
+    wrapper.style.overflowX = 'visible'
+    wrapper.style.borderRadius = '0'
+
+    await new Promise(r => setTimeout(r, 80))
+
+    const canvas = await html2canvas(wrapper, {
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#1a1a2e',
+      scale: 2,
+      x: 0,
+      y: 0,
+      width: wrapper.scrollWidth,
+      height: wrapper.scrollHeight,
+    })
+
+    // Restore everything
+    toolbar.style.display = ''
+    wrapper.style.backgroundImage = ''
+    wrapper.style.backgroundSize = ''
+    wrapper.style.backgroundRepeat = ''
+    wrapper.style.backgroundColor = ''
+    wrapper.style.backdropFilter = ''
+    wrapper.style.overflowX = ''
+    wrapper.style.borderRadius = ''
+
+    const link = document.createElement('a')
+    link.download = 'schedule-table.png'
+    link.href = canvas.toDataURL('image/png')
+    link.click()
+  }
+
   const handlePrint = () => {
     const PRINT_TARGET_WIDTH = 1040
     const scale = totalWidth > PRINT_TARGET_WIDTH ? PRINT_TARGET_WIDTH / totalWidth : 1
@@ -209,9 +268,10 @@ function SchedulePage() {
   return (
     <div
       className="schedule-page"
-      style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+      ref={pageRef}
+      style={bgImage ? { backgroundImage: `url(${bgImage})` } : undefined}
     >
-      <div className="schedule-toolbar no-print">
+      <div className="schedule-toolbar no-print" ref={toolbarRef}>
         <button className="sched-btn back" onClick={() => navigate('/')}>Back</button>
         <button className="sched-btn add-row" onClick={handleAddRow}>+ Row</button>
         <button className="sched-btn rem-row" onClick={handleRemoveLastRow}>− Row</button>
@@ -224,6 +284,7 @@ function SchedulePage() {
           <button className="sched-btn toggle" onClick={showAllColumns}>Show Hidden Cols</button>
         )}
         <button className="sched-btn print" onClick={handlePrint}>Print / PDF</button>
+        <button className="sched-btn snapshot" onClick={handleSnapshot}>Snapshot</button>
         <button className="sched-btn bg-upload" onClick={() => bgInputRef.current?.click()}>
           {bgImage ? 'Change BG' : 'Upload BG'}
         </button>
@@ -235,7 +296,7 @@ function SchedulePage() {
 
       <input ref={bgInputRef} type="file" accept="image/*" hidden onChange={handleBgUpload} />
 
-      <div className="schedule-table-wrapper">
+      <div className="schedule-table-wrapper" ref={tableWrapperRef}>
         <input
           className="schedule-title-input no-print"
           value={title}

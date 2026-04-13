@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import html2canvas from 'html2canvas'
 import './GamesPage.css'
 
 const DEFAULT_HEADERS = ['Date', 'Home Team', 'Away Team', 'Score', 'Venue', 'Status']
@@ -25,6 +26,9 @@ function GamesPage() {
   const fileInputRef = useRef(null)
   const bgInputRef = useRef(null)
   const pendingCellRef = useRef(null)
+  const tableWrapperRef = useRef(null)
+  const pageRef = useRef(null)
+  const toolbarRef = useRef(null)
 
   const [bgImage, setBgImage] = useState(() => localStorage.getItem(BG_STORAGE_KEY) || null)
 
@@ -245,6 +249,61 @@ function GamesPage() {
     })
   }
 
+  const handleSnapshot = async () => {
+    const page = pageRef.current
+    const toolbar = toolbarRef.current
+    const wrapper = tableWrapperRef.current
+    if (!page || !wrapper) return
+
+    // Hide toolbar
+    toolbar.style.display = 'none'
+
+    // Copy page background image onto the wrapper so it appears in the snapshot
+    const pageBgImage = page.style.backgroundImage
+    if (pageBgImage) {
+      wrapper.style.backgroundImage = pageBgImage
+      wrapper.style.backgroundSize = '100% 100%'
+      wrapper.style.backgroundRepeat = 'no-repeat'
+    } else {
+      wrapper.style.backgroundColor = '#1a1a2e'
+    }
+
+    // Remove backdrop-filter (not supported by html2canvas)
+    wrapper.style.backdropFilter = 'none'
+
+    // Expand overflow so full table width is captured
+    wrapper.style.overflowX = 'visible'
+    wrapper.style.borderRadius = '0'
+
+    await new Promise(r => setTimeout(r, 80))
+
+    const canvas = await html2canvas(wrapper, {
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#1a1a2e',
+      scale: 2,
+      x: 0,
+      y: 0,
+      width: wrapper.scrollWidth,
+      height: wrapper.scrollHeight,
+    })
+
+    // Restore everything
+    toolbar.style.display = ''
+    wrapper.style.backgroundImage = ''
+    wrapper.style.backgroundSize = ''
+    wrapper.style.backgroundRepeat = ''
+    wrapper.style.backgroundColor = ''
+    wrapper.style.backdropFilter = ''
+    wrapper.style.overflowX = ''
+    wrapper.style.borderRadius = ''
+
+    const link = document.createElement('a')
+    link.download = 'games-table.png'
+    link.href = canvas.toDataURL('image/png')
+    link.click()
+  }
+
   const handlePrint = () => {
     const PRINT_TARGET_WIDTH = 1040
     const scale = totalWidth > PRINT_TARGET_WIDTH ? PRINT_TARGET_WIDTH / totalWidth : 1
@@ -257,9 +316,10 @@ function GamesPage() {
   return (
     <div
       className="games-page"
-      style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+      ref={pageRef}
+      style={bgImage ? { backgroundImage: `url(${bgImage})` } : undefined}
     >
-      <div className="games-header no-print">
+      <div className="games-header no-print" ref={toolbarRef}>
         <button className="back-btn" onClick={() => navigate('/')}>
           Back to Main
         </button>
@@ -289,6 +349,9 @@ function GamesPage() {
         <button className="print-btn" onClick={handlePrint}>
           Print / Save PDF
         </button>
+        <button className="snapshot-btn" onClick={handleSnapshot}>
+          Snapshot
+        </button>
         <button className="clear-btn" onClick={handleClear}>
           Clear Table
         </button>
@@ -316,7 +379,7 @@ function GamesPage() {
         onChange={handleImageSelected}
       />
 
-      <div className="games-table-wrapper">
+      <div className="games-table-wrapper" ref={tableWrapperRef}>
         <h1 className="games-title">Games</h1>
         <table
           className="games-table"
