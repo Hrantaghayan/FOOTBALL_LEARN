@@ -8,6 +8,7 @@ import SecondPage from './components/SecondPage'
 import GamesPage from './components/GamesPage'
 import SchedulePage from './components/SchedulePage'
 import LoginModal from './components/LoginModal'
+import { useLanguage } from './context/LanguageContext'
 import './App.css'
 
 function MainPage() {
@@ -17,6 +18,7 @@ function MainPage() {
   const [isEditMode, setIsEditMode] = useState(false)
   const [editingLeagueIndex, setEditingLeagueIndex] = useState(null)
   const navigate = useNavigate()
+  const { t } = useLanguage()
 
   useEffect(() => {
     const savedLeagues = localStorage.getItem('footballLeagues')
@@ -110,20 +112,20 @@ function MainPage() {
 
         <div className="action-buttons no-print">
           <button className="add-more-btn" onClick={handleOpenModal}>
-            {leagues.length < 8 ? `Add League (${leagues.length}/8)` : 'Add More Leagues'}
+            {leagues.length < 8 ? t('app.addLeague', { count: leagues.length }) : t('app.addMoreLeagues')}
           </button>
           <PrintButton />
           <button className="reset-btn" onClick={handleReset}>
-            Reset All
+            {t('app.resetAll')}
           </button>
           <button className="add-more-btn" onClick={() => navigate('/second')}>
-            Go to Second Page
+            {t('app.secondPage')}
           </button>
           <button className="add-more-btn" onClick={() => navigate('/games')}>
-            Games
+            {t('app.games')}
           </button>
           <button className="add-more-btn schedule-btn" onClick={() => navigate('/schedule')}>
-            Create Game Schedule
+            {t('app.createSchedule')}
           </button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import html2canvas from 'html2canvas'
+import { useLanguage } from '../context/LanguageContext'
 import './GamesPage.css'
 
 const DEFAULT_HEADERS = ['Date', 'Home Team', 'Away Team', 'Score', 'Venue', 'Status']
@@ -23,6 +24,7 @@ const fileToDataUrl = (file) =>
 
 function GamesPage() {
   const navigate = useNavigate()
+  const { t } = useLanguage()
   const fileInputRef = useRef(null)
   const bgInputRef = useRef(null)
   const pendingCellRef = useRef(null)
@@ -218,7 +220,7 @@ function GamesPage() {
   const handleAddColumn = () => {
     setState((prev) => ({
       ...prev,
-      headers: [...prev.headers, `Column ${prev.headers.length + 1}`],
+      headers: [...prev.headers, t('games.column', { num: prev.headers.length + 1 })],
       widths: [...prev.widths, DEFAULT_COL_WIDTH],
       colHidden: [...prev.colHidden, false],
       rows: prev.rows.map((row) => [...row, makeEmptyCell()]),
@@ -321,45 +323,45 @@ function GamesPage() {
     >
       <div className="games-header no-print" ref={toolbarRef}>
         <button className="back-btn" onClick={() => navigate('/')}>
-          Back to Main
+          {t('games.backToMain')}
         </button>
         <button className="add-row-btn" onClick={handleAddRow}>
-          + Row
+          {t('games.addRow')}
         </button>
         <button className="remove-row-tb-btn" onClick={handleRemoveLastRow}>
-          − Row
+          {t('games.removeRow')}
         </button>
         <button className="add-col-btn" onClick={handleAddColumn}>
-          + Column
+          {t('games.addColumn')}
         </button>
         <button className="remove-col-btn" onClick={handleRemoveLastColumn}>
-          − Column
+          {t('games.removeColumn')}
         </button>
         <button className="toggle-btn" onClick={toggleNumbers}>
-          {showNumbers ? 'Hide #' : 'Show #'}
+          {showNumbers ? t('games.hideNumbers') : t('games.showNumbers')}
         </button>
         <button className="toggle-btn" onClick={toggleImages}>
-          {showImages ? 'Hide Images' : 'Show Images'}
+          {showImages ? t('games.hideImages') : t('games.showImages')}
         </button>
         {hasHiddenColumns && (
           <button className="toggle-btn" onClick={showAllColumns}>
-            Show Hidden Columns
+            {t('games.showHiddenColumns')}
           </button>
         )}
         <button className="print-btn" onClick={handlePrint}>
-          Print / Save PDF
+          {t('games.print')}
         </button>
         <button className="snapshot-btn" onClick={handleSnapshot}>
-          Snapshot
+          {t('games.snapshot')}
         </button>
         <button className="clear-btn" onClick={handleClear}>
-          Clear Table
+          {t('games.clearTable')}
         </button>
         <button className="bg-upload-btn" onClick={() => bgInputRef.current?.click()}>
-          {bgImage ? 'Change BG' : 'Upload BG'}
+          {bgImage ? t('games.changeBg') : t('games.uploadBg')}
         </button>
         {bgImage && (
-          <button className="remove-bg-btn" onClick={handleRemoveBg}>Remove BG</button>
+          <button className="remove-bg-btn" onClick={handleRemoveBg}>{t('games.removeBg')}</button>
         )}
       </div>
 
@@ -380,7 +382,7 @@ function GamesPage() {
       />
 
       <div className="games-table-wrapper" ref={tableWrapperRef}>
-        <h1 className="games-title">Games</h1>
+        <h1 className="games-title">{t('games.title')}</h1>
         <table
           className="games-table"
           style={{ width: `${totalWidth + (showNumbers ? 50 : 0)}px` }}

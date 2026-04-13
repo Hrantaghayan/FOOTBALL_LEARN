@@ -1,8 +1,10 @@
 import "./Header.css";
 import { useAuth } from "../context/AuthContext";
+import { useLanguage } from "../context/LanguageContext";
 
 function Header({ titleImage }) {
   const { logout } = useAuth();
+  const { t } = useLanguage();
 
   return (
     <header className="header">
@@ -21,7 +23,7 @@ function Header({ titleImage }) {
         />
       </div>
       <button className="logout-btn no-print" onClick={logout}>
-        Logout
+        {t('header.logout')}
       </button>
     </header>
   );

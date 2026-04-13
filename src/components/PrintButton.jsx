@@ -1,13 +1,12 @@
 import './PrintButton.css'
+import { useLanguage } from '../context/LanguageContext'
 
 function PrintButton() {
-  const handlePrint = () => {
-    window.print()
-  }
+  const { t } = useLanguage()
 
   return (
-    <button className="print-btn" onClick={handlePrint}>
-      Print
+    <button className="print-btn" onClick={() => window.print()}>
+      {t('app.print')}
     </button>
   )
 }

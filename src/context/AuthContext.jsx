@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
       setIsLoggedIn(true)
       return null
     }
-    return 'Invalid email or password.'
+    return 'login.error'
   }
 
   function logout() {

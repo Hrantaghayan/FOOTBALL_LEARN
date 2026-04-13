@@ -1,9 +1,11 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useLanguage } from '../context/LanguageContext'
 import './SecondPage.css'
 
 function SecondPage() {
   const navigate = useNavigate()
+  const { t } = useLanguage()
   const [backgroundImage, setBackgroundImage] = useState(null)
   const [logos, setLogos] = useState(Array(24).fill(null))
   const bgInputRef = useRef(null)
@@ -113,17 +115,17 @@ function SecondPage() {
     >
       <div className="second-page-header">
         <button className="back-btn" onClick={() => navigate('/')}>
-          Back to Main
+          {t('second.backToMain')}
         </button>
         <button className="bg-upload-btn" onClick={() => bgInputRef.current?.click()}>
-          Upload Background
+          {t('second.uploadBg')}
         </button>
         <button
           className="logo-upload-btn"
           onClick={() => logoInputRef.current?.click()}
           disabled={uploadedCount >= 24}
         >
-          Upload Team Logo ({uploadedCount}/24)
+          {t('second.uploadLogo', { count: uploadedCount })}
         </button>
         <input ref={bgInputRef} type="file" accept="image/*" hidden onChange={handleBgUpload} />
         <input ref={logoInputRef} type="file" accept="image/*" multiple hidden onChange={handleLogoUpload} />

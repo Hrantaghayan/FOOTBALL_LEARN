@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import html2canvas from 'html2canvas'
+import { useLanguage } from '../context/LanguageContext'
 import './SchedulePage.css'
 
 const DEFAULT_HEADERS = ['Date', 'Team 1', 'Time', 'Team 2']
@@ -14,6 +15,7 @@ const makeEmptyRow = (cols) => Array.from({ length: cols }, () => '')
 
 function SchedulePage() {
   const navigate = useNavigate()
+  const { t } = useLanguage()
   const bgInputRef = useRef(null)
   const tableWrapperRef = useRef(null)
   const pageRef = useRef(null)
@@ -170,7 +172,7 @@ function SchedulePage() {
   const handleAddColumn = () => {
     setState((prev) => ({
       ...prev,
-      headers: [...prev.headers, `Column ${prev.headers.length + 1}`],
+      headers: [...prev.headers, t('schedule.column', { num: prev.headers.length + 1 })],
       widths: [...prev.widths, DEFAULT_COL_WIDTH],
       colHidden: [...prev.colHidden, false],
       rows: prev.rows.map((row) => [...row, '']),
@@ -197,7 +199,7 @@ function SchedulePage() {
       widths: [...DEFAULT_WIDTHS],
       colHidden: Array.from({ length: DEFAULT_HEADERS.length }, () => false),
       showNumbers: true,
-      title: 'Game Schedule',
+      title: t('schedule.defaultTitle'),
     })
   }
 
@@ -272,26 +274,26 @@ function SchedulePage() {
       style={bgImage ? { backgroundImage: `url(${bgImage})` } : undefined}
     >
       <div className="schedule-toolbar no-print" ref={toolbarRef}>
-        <button className="sched-btn back" onClick={() => navigate('/')}>Back</button>
-        <button className="sched-btn add-row" onClick={handleAddRow}>+ Row</button>
-        <button className="sched-btn rem-row" onClick={handleRemoveLastRow}>− Row</button>
-        <button className="sched-btn add-col" onClick={handleAddColumn}>+ Column</button>
-        <button className="sched-btn rem-col" onClick={handleRemoveLastColumn}>− Column</button>
+        <button className="sched-btn back" onClick={() => navigate('/')}>{t('schedule.back')}</button>
+        <button className="sched-btn add-row" onClick={handleAddRow}>{t('schedule.addRow')}</button>
+        <button className="sched-btn rem-row" onClick={handleRemoveLastRow}>{t('schedule.removeRow')}</button>
+        <button className="sched-btn add-col" onClick={handleAddColumn}>{t('schedule.addColumn')}</button>
+        <button className="sched-btn rem-col" onClick={handleRemoveLastColumn}>{t('schedule.removeColumn')}</button>
         <button className="sched-btn toggle" onClick={toggleNumbers}>
-          {showNumbers ? 'Hide #' : 'Show #'}
+          {showNumbers ? t('schedule.hideNumbers') : t('schedule.showNumbers')}
         </button>
         {hasHiddenColumns && (
-          <button className="sched-btn toggle" onClick={showAllColumns}>Show Hidden Cols</button>
+          <button className="sched-btn toggle" onClick={showAllColumns}>{t('schedule.showHiddenCols')}</button>
         )}
-        <button className="sched-btn print" onClick={handlePrint}>Print / PDF</button>
-        <button className="sched-btn snapshot" onClick={handleSnapshot}>Snapshot</button>
+        <button className="sched-btn print" onClick={handlePrint}>{t('schedule.print')}</button>
+        <button className="sched-btn snapshot" onClick={handleSnapshot}>{t('schedule.snapshot')}</button>
         <button className="sched-btn bg-upload" onClick={() => bgInputRef.current?.click()}>
-          {bgImage ? 'Change BG' : 'Upload BG'}
+          {bgImage ? t('schedule.changeBg') : t('schedule.uploadBg')}
         </button>
         {bgImage && (
-          <button className="sched-btn rem-bg" onClick={handleRemoveBg}>Remove BG</button>
+          <button className="sched-btn rem-bg" onClick={handleRemoveBg}>{t('schedule.removeBg')}</button>
         )}
-        <button className="sched-btn clear" onClick={handleClear}>Clear</button>
+        <button className="sched-btn clear" onClick={handleClear}>{t('schedule.clear')}</button>
       </div>
 
       <input ref={bgInputRef} type="file" accept="image/*" hidden onChange={handleBgUpload} />
@@ -301,7 +303,7 @@ function SchedulePage() {
           className="schedule-title-input no-print"
           value={title}
           onChange={handleTitleChange}
-          placeholder="Schedule Title"
+          placeholder={t('schedule.titlePlaceholder')}
         />
         <h1 className="schedule-title print-only">{title}</h1>
 

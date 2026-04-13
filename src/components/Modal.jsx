@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
+import { useLanguage } from '../context/LanguageContext'
 import './Modal.css'
 
 function Modal({ onAddLeague, leagueCount, onClose, isEditMode, editingLeague }) {
+  const { t } = useLanguage()
   const [leagueName, setLeagueName] = useState('')
   const [teams, setTeams] = useState(Array(11).fill(''))
   const [leagueLogo, setLeagueLogo] = useState('')
@@ -49,13 +51,13 @@ function Modal({ onAddLeague, leagueCount, onClose, isEditMode, editingLeague })
     setError('')
 
     if (!leagueName.trim()) {
-      setError('Please enter a league name')
+      setError(t('modal.error.name'))
       return
     }
 
     const filledTeams = teams.filter(team => team.trim() !== '')
     if (filledTeams.length < 11) {
-      setError(`Please enter all 11 teams (${filledTeams.length}/11 entered)`)
+      setError(t('modal.error.teams', { count: filledTeams.length }))
       return
     }
 
@@ -75,26 +77,26 @@ function Modal({ onAddLeague, leagueCount, onClose, isEditMode, editingLeague })
     <div className="modal-overlay">
       <div className="modal">
         <div className="modal-header">
-          <h2>{isEditMode ? 'Edit League' : 'Add New League'}</h2>
-          <span className="league-counter">{leagueCount} Leagues Added</span>
+          <h2>{isEditMode ? t('modal.editLeague') : t('modal.addNewLeague')}</h2>
+          <span className="league-counter">{t('modal.leaguesAdded', { count: leagueCount })}</span>
           <button className="close-btn" onClick={onClose}>&times;</button>
         </div>
 
         <form onSubmit={handleSubmit} className="modal-form">
           <div className="form-group">
-            <label htmlFor="leagueName">League Name</label>
+            <label htmlFor="leagueName">{t('modal.leagueName')}</label>
             <input
               type="text"
               id="leagueName"
               value={leagueName}
               onChange={(e) => setLeagueName(e.target.value)}
-              placeholder="e.g., Premier League"
+              placeholder={t('modal.leagueName.placeholder')}
               className="league-input"
             />
           </div>
 
           <div className="form-group">
-            <label>League Logo (Optional)</label>
+            <label>{t('modal.leagueLogo')}</label>
             <div className="logo-upload-container">
               {leagueLogo ? (
                 <div className="logo-preview">
@@ -109,7 +111,7 @@ function Modal({ onAddLeague, leagueCount, onClose, isEditMode, editingLeague })
                   className="upload-logo-btn"
                   onClick={() => logoInputRef.current?.click()}
                 >
-                  + Upload Logo
+                  {t('modal.uploadLogo')}
                 </button>
               )}
               <input
@@ -123,7 +125,7 @@ function Modal({ onAddLeague, leagueCount, onClose, isEditMode, editingLeague })
           </div>
 
           <div className="teams-section">
-            <label>Team Names (11 teams required)</label>
+            <label>{t('modal.teamNames')}</label>
             <div className="teams-grid">
               {teams.map((team, index) => (
                 <div key={index} className="team-input-wrapper">
@@ -132,7 +134,7 @@ function Modal({ onAddLeague, leagueCount, onClose, isEditMode, editingLeague })
                     type="text"
                     value={team}
                     onChange={(e) => handleTeamChange(index, e.target.value)}
-                    placeholder={`Team ${index + 1}`}
+                    placeholder={t('modal.team', { num: index + 1 })}
                     className="team-input"
                   />
                 </div>
@@ -144,10 +146,10 @@ function Modal({ onAddLeague, leagueCount, onClose, isEditMode, editingLeague })
 
           <div className="modal-actions">
             <button type="submit" className="submit-btn">
-              {isEditMode ? 'Update League' : 'Add League'}
+              {isEditMode ? t('modal.updateLeague') : t('modal.addLeague')}
             </button>
             <button type="button" className="cancel-btn" onClick={onClose}>
-              Cancel
+              {t('modal.cancel')}
             </button>
           </div>
         </form>

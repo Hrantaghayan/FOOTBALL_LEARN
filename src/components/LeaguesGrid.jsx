@@ -1,11 +1,14 @@
 import LeagueCard from './LeagueCard'
+import { useLanguage } from '../context/LanguageContext'
 import './LeaguesGrid.css'
 
 function LeaguesGrid({ leagues, onEdit, onDelete }) {
+  const { t } = useLanguage()
+
   if (leagues.length === 0) {
     return (
       <div className="empty-state">
-        <p>No leagues added yet. Add your first league to get started!</p>
+        <p>{t('grid.empty')}</p>
       </div>
     )
   }
