@@ -1,0 +1,171 @@
+.league-card {
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(3px);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.league-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.league-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+.league-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.league-name {
+  color: #ffd700;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.league-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.edit-btn,
+.delete-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 5px 8px;
+  font-size: 16px;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.edit-btn:hover {
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+}
+
+.delete-btn:hover {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+.team-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.team-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.team-item:last-child {
+  border-bottom: none;
+}
+
+.team-item.europa-spots {
+  background: rgba(255, 140, 0, 0.2);
+  border: 1px solid rgba(255, 140, 0, 0.6);
+  margin-bottom: 4px;
+}
+
+.team-rank {
+  background: #ffffff;
+  color: #1a1a2e;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.team-name {
+  color: #fff;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media print {
+  .league-card {
+    background: #f5f5f5 !important;
+    border: 1px solid #ccc;
+    box-shadow: none;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    padding: 15px;
+  }
+
+  .league-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .league-logo {
+    width: 30px;
+    height: 30px;
+    background: #eee;
+  }
+
+  .league-name {
+    color: #1a1a2e !important;
+    font-size: 14px;
+  }
+
+  .league-header {
+    border-bottom-color: #ccc;
+  }
+
+  .team-item {
+    padding: 5px 0;
+  }
+
+  .team-rank {
+    background: #ffffff !important;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  .team-item.europa-spots {
+    background: rgba(255, 140, 0, 0.2) !important;
+    border: 1px solid #ff8c00;
+  }
+
+  .team-name {
+    color: #333 !important;
+    font-size: 11px;
+  }
+}

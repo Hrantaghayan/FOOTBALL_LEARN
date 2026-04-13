@@ -1,0 +1,237 @@
+.second-page {
+  height: 100vh;
+  overflow: hidden;
+  padding: 10px;
+  background-color: #1a1a2e;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+}
+
+.second-page-header {
+  display: flex;
+  gap: 10px;
+  padding: 8px 15px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+
+.back-btn {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.back-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(102, 126, 234, 0.4);
+}
+
+.bg-upload-btn {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.bg-upload-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(245, 87, 108, 0.4);
+}
+
+.logo-upload-btn {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.logo-upload-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(76, 175, 80, 0.4);
+}
+
+.logo-upload-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* === Frame layout: logos around center === */
+.logo-frame {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Top and bottom rows — centered, tight */
+.frame-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+  flex-shrink: 0;
+}
+
+/* Middle section — left | center gap | right */
+.frame-middle {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.frame-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex-shrink: 0;
+}
+
+/* Left side rows push toward center (right-aligned) */
+.frame-side:first-child .frame-side-row {
+  justify-content: flex-end;
+}
+
+/* Right side rows push toward center (left-aligned) */
+.frame-side:last-child .frame-side-row {
+  justify-content: flex-start;
+}
+
+.frame-side-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.frame-center {
+  width: 320px;
+  flex-shrink: 0;
+}
+
+/* Individual team logo slot */
+.team-slot {
+  width: 180px;
+  height: 180px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.team-slot img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.7));
+}
+
+.team-slot .remove-btn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: rgba(231, 76, 60, 0.9);
+  color: white;
+  border: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  line-height: 1;
+  z-index: 2;
+}
+
+.team-slot:hover .remove-btn {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .team-slot {
+    width: 75px;
+    height: 75px;
+  }
+
+  .frame-center {
+    width: 260px;
+  }
+
+  .frame-row {
+    gap: 8px;
+  }
+
+  .frame-side-row {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 900px) {
+  .team-slot {
+    width: 60px;
+    height: 60px;
+  }
+
+  .frame-center {
+    width: 200px;
+  }
+
+  .frame-row {
+    gap: 6px;
+  }
+
+  .frame-side-row {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 600px) {
+  .second-page {
+    padding: 5px;
+  }
+
+  .team-slot {
+    width: 45px;
+    height: 45px;
+  }
+
+  .frame-center {
+    width: 140px;
+  }
+
+  .frame-side-row {
+    gap: 3px;
+  }
+}

@@ -1,0 +1,291 @@
+.schedule-page {
+  min-height: 100vh;
+  padding: 20px;
+  background-color: #1a1a2e;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Toolbar */
+.schedule-toolbar {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.sched-btn {
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  font-weight: 500;
+}
+
+.sched-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.sched-btn.back     { background: linear-gradient(135deg, #667eea, #764ba2); }
+.sched-btn.add-row  { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.sched-btn.rem-row  { background: linear-gradient(135deg, #fa709a, #fee140); }
+.sched-btn.add-col  { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.sched-btn.rem-col  { background: linear-gradient(135deg, #fcb69f, #ffecd2); color: #5a3d2b !important; }
+.sched-btn.toggle   { background: linear-gradient(135deg, #a8edea, #fed6e3); color: #2d3436 !important; }
+.sched-btn.print    { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.sched-btn.bg-upload { background: linear-gradient(135deg, #43e97b, #667eea); }
+.sched-btn.rem-bg   { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
+.sched-btn.clear    { background: linear-gradient(135deg, #ff6b6b, #ee5a6f); }
+
+/* Table wrapper */
+.schedule-table-wrapper {
+  background: rgba(255, 255, 255, 0.93);
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 6px 32px rgba(0, 0, 0, 0.4);
+  overflow-x: auto;
+  backdrop-filter: blur(4px);
+}
+
+/* Title */
+.schedule-title-input {
+  display: block;
+  width: 100%;
+  margin: 0 0 16px 0;
+  border: none;
+  border-bottom: 2px dashed #aaa;
+  outline: none;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a2e;
+  text-align: center;
+  background: transparent;
+  letter-spacing: 1px;
+}
+
+.schedule-title-input:focus {
+  border-bottom-color: #667eea;
+}
+
+.schedule-title {
+  margin: 0 0 16px 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a2e;
+  text-align: center;
+  letter-spacing: 1px;
+  display: none;
+}
+
+.print-only {
+  display: none;
+}
+
+/* Table */
+.schedule-table {
+  border-collapse: collapse;
+  font-family: system-ui, -apple-system, sans-serif;
+  table-layout: fixed;
+}
+
+.schedule-table th,
+.schedule-table td {
+  border: 1px solid #ccc;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Header */
+.schedule-table th {
+  background: #2d2b55;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  position: relative;
+}
+
+.sched-header-cell {
+  display: flex;
+  align-items: center;
+  padding: 10px 10px;
+}
+
+.sched-header-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  font: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  min-width: 0;
+}
+
+.sched-header-input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.sched-header-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+}
+
+/* Hide column button */
+.sched-col-hide {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+}
+
+.schedule-table th:hover .sched-col-hide {
+  opacity: 1;
+}
+
+.sched-col-hide:hover {
+  background: #ee5a6f;
+}
+
+/* Resize handle */
+.sched-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+  z-index: 2;
+  background: rgba(180, 160, 255, 0.2);
+  transition: background 0.15s;
+}
+
+.sched-resize-handle:hover,
+.sched-resize-handle:active {
+  background: rgba(180, 160, 255, 0.8);
+}
+
+/* Rows */
+.schedule-table td {
+  padding: 0;
+}
+
+.schedule-table td input {
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #1a1a2e;
+  padding: 10px 12px;
+  font-family: inherit;
+}
+
+.schedule-table td input:focus {
+  background: #f0eeff;
+}
+
+.row-even {
+  background: #ffffff;
+}
+
+.row-odd {
+  background: #f4f3fc;
+}
+
+.schedule-table td.num-col,
+.schedule-table th.num-col {
+  text-align: center;
+  font-weight: 600;
+  width: 50px;
+}
+
+.schedule-table td.num-col {
+  color: #888;
+  background: #efefef;
+}
+
+/* Print */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 8mm;
+  }
+
+  html, body {
+    background: white !important;
+  }
+
+  .schedule-page {
+    background: white !important;
+    padding: 0;
+    min-height: 0;
+    gap: 0;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  .schedule-title-input {
+    display: none !important;
+  }
+
+  .schedule-table-wrapper {
+    box-shadow: none;
+    padding: 0;
+    overflow: visible !important;
+    background: white !important;
+  }
+
+  .schedule-table {
+    transform: scale(var(--sched-print-scale, 1));
+    transform-origin: top left;
+  }
+
+  .schedule-table td input {
+    color: black;
+  }
+
+  .schedule-table th,
+  .schedule-table td {
+    border: 1px solid #555;
+  }
+
+  .schedule-table th {
+    background: #2d2b55 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .row-even { background: #ffffff !important; }
+  .row-odd  { background: #f4f3fc !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
