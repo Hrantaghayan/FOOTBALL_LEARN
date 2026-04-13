@@ -1,6 +1,9 @@
 import "./Header.css";
+import { useAuth } from "../context/AuthContext";
 
 function Header({ titleImage }) {
+  const { logout } = useAuth();
+
   return (
     <header className="header">
       <div className="image-container">
@@ -17,6 +20,9 @@ function Header({ titleImage }) {
           }}
         />
       </div>
+      <button className="logout-btn no-print" onClick={logout}>
+        Logout
+      </button>
     </header>
   );
 }

@@ -7,6 +7,7 @@ import PrintButton from './components/PrintButton'
 import SecondPage from './components/SecondPage'
 import GamesPage from './components/GamesPage'
 import SchedulePage from './components/SchedulePage'
+import LoginModal from './components/LoginModal'
 import './App.css'
 
 function MainPage() {
@@ -132,12 +133,15 @@ function MainPage() {
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<MainPage />} />
-      <Route path="/second" element={<SecondPage />} />
-      <Route path="/games" element={<GamesPage />} />
-      <Route path="/schedule" element={<SchedulePage />} />
-    </Routes>
+    <>
+      <LoginModal />
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/second" element={<SecondPage />} />
+        <Route path="/games" element={<GamesPage />} />
+        <Route path="/schedule" element={<SchedulePage />} />
+      </Routes>
+    </>
   )
 }
 
