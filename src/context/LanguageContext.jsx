@@ -68,6 +68,20 @@ const translations = {
     'games.title': 'Games',
     'games.column': 'Column {num}',
 
+    // SchedulePage headers
+    'schedule.header.date': 'Date',
+    'schedule.header.team1': 'Team 1',
+    'schedule.header.time': 'Time',
+    'schedule.header.team2': 'Team 2',
+
+    // GamesPage headers
+    'games.header.date': 'Date',
+    'games.header.homeTeam': 'Home Team',
+    'games.header.awayTeam': 'Away Team',
+    'games.header.score': 'Score',
+    'games.header.venue': 'Venue',
+    'games.header.status': 'Status',
+
     // SchedulePage
     'schedule.back': 'Back',
     'schedule.addRow': '+ Row',
@@ -153,6 +167,20 @@ const translations = {
     'games.removeBg': 'Убрать фон',
     'games.title': 'Игры',
     'games.column': 'Столбец {num}',
+
+    // SchedulePage headers
+    'schedule.header.date': 'Дата',
+    'schedule.header.team1': 'Команда 1',
+    'schedule.header.time': 'Время',
+    'schedule.header.team2': 'Команда 2',
+
+    // GamesPage headers
+    'games.header.date': 'Дата',
+    'games.header.homeTeam': 'Хозяева',
+    'games.header.awayTeam': 'Гости',
+    'games.header.score': 'Счёт',
+    'games.header.venue': 'Место',
+    'games.header.status': 'Статус',
 
     // SchedulePage
     'schedule.back': 'Назад',

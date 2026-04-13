@@ -5,6 +5,21 @@ import { useLanguage } from '../context/LanguageContext'
 import './GamesPage.css'
 
 const DEFAULT_HEADERS = ['Date', 'Home Team', 'Away Team', 'Score', 'Venue', 'Status']
+
+const GAMES_HEADER_DEFAULTS = {
+  'Date': 'games.header.date',
+  'Home Team': 'games.header.homeTeam',
+  'Away Team': 'games.header.awayTeam',
+  'Score': 'games.header.score',
+  'Venue': 'games.header.venue',
+  'Status': 'games.header.status',
+  'Дата': 'games.header.date',
+  'Хозяева': 'games.header.homeTeam',
+  'Гости': 'games.header.awayTeam',
+  'Счёт': 'games.header.score',
+  'Место': 'games.header.venue',
+  'Статус': 'games.header.status',
+}
 const DEFAULT_WIDTHS = [110, 200, 200, 120, 150, 140]
 const DEFAULT_COL_WIDTH = 150
 const MIN_COL_WIDTH = 50
@@ -24,7 +39,7 @@ const fileToDataUrl = (file) =>
 
 function GamesPage() {
   const navigate = useNavigate()
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const fileInputRef = useRef(null)
   const bgInputRef = useRef(null)
   const pendingCellRef = useRef(null)
@@ -110,6 +125,16 @@ function GamesPage() {
       JSON.stringify({ headers, rows, widths, colHidden, showNumbers, showImages })
     )
   }, [headers, rows, widths, colHidden, showNumbers, showImages])
+
+  // Re-translate default headers when language changes
+  useEffect(() => {
+    setState(prev => ({
+      ...prev,
+      headers: prev.headers.map(h =>
+        GAMES_HEADER_DEFAULTS[h] ? t(GAMES_HEADER_DEFAULTS[h]) : h
+      ),
+    }))
+  }, [lang])
 
   const toggleNumbers = () => setState((prev) => ({ ...prev, showNumbers: !prev.showNumbers }))
   const toggleImages = () => setState((prev) => ({ ...prev, showImages: !prev.showImages }))

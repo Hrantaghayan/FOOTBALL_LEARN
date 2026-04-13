@@ -13,9 +13,21 @@ const BG_STORAGE_KEY = 'footballScheduleBg'
 
 const makeEmptyRow = (cols) => Array.from({ length: cols }, () => '')
 
+// Maps every known default header value (both languages) to its translation key
+const SCHED_HEADER_DEFAULTS = {
+  'Date': 'schedule.header.date',
+  'Team 1': 'schedule.header.team1',
+  'Time': 'schedule.header.time',
+  'Team 2': 'schedule.header.team2',
+  'Дата': 'schedule.header.date',
+  'Команда 1': 'schedule.header.team1',
+  'Время': 'schedule.header.time',
+  'Команда 2': 'schedule.header.team2',
+}
+
 function SchedulePage() {
   const navigate = useNavigate()
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   const bgInputRef = useRef(null)
   const tableWrapperRef = useRef(null)
   const pageRef = useRef(null)
@@ -78,6 +90,18 @@ function SchedulePage() {
       localStorage.removeItem(BG_STORAGE_KEY)
     }
   }, [bgImage])
+
+  // Re-translate default headers and title when language changes
+  useEffect(() => {
+    setState(prev => {
+      const newHeaders = prev.headers.map(h =>
+        SCHED_HEADER_DEFAULTS[h] ? t(SCHED_HEADER_DEFAULTS[h]) : h
+      )
+      const isDefaultTitle = prev.title === 'Game Schedule' || prev.title === 'Расписание игр'
+      const newTitle = isDefaultTitle ? t('schedule.defaultTitle') : prev.title
+      return { ...prev, headers: newHeaders, title: newTitle }
+    })
+  }, [lang])
 
   const handleBgUpload = (e) => {
     const file = e.target.files?.[0]
