@@ -13,16 +13,19 @@ const BG_STORAGE_KEY = 'footballScheduleBg'
 
 const makeEmptyRow = (cols) => Array.from({ length: cols }, () => '')
 
-// Maps every known default header value (both languages) to its translation key
-const SCHED_HEADER_DEFAULTS = {
-  'Date': 'schedule.header.date',
-  'Team 1': 'schedule.header.team1',
-  'Time': 'schedule.header.time',
-  'Team 2': 'schedule.header.team2',
-  'Дата': 'schedule.header.date',
-  'Команда 1': 'schedule.header.team1',
-  'Время': 'schedule.header.time',
-  'Команда 2': 'schedule.header.team2',
+// Translates a header/title to the given language, returns original if not a known default
+const SCHED_TRANSLATIONS = {
+  en: { 'Date': 'Date', 'Team 1': 'Team 1', 'Time': 'Time', 'Team 2': 'Team 2', 'Дата': 'Date', 'Команда 1': 'Team 1', 'Время': 'Time', 'Команда 2': 'Team 2' },
+  ru: { 'Date': 'Дата', 'Team 1': 'Команда 1', 'Time': 'Время', 'Team 2': 'Команда 2', 'Дата': 'Дата', 'Команда 1': 'Команда 1', 'Время': 'Время', 'Команда 2': 'Команда 2' },
+}
+const SCHED_TITLE = { en: 'Game Schedule', ru: 'Расписание игр' }
+
+function translateSchedHeader(h, lang) {
+  return SCHED_TRANSLATIONS[lang]?.[h] ?? h
+}
+function translateSchedTitle(title, lang) {
+  if (title === 'Game Schedule' || title === 'Расписание игр') return SCHED_TITLE[lang] || title
+  return title
 }
 
 function SchedulePage() {
@@ -36,13 +39,16 @@ function SchedulePage() {
   const [bgImage, setBgImage] = useState(() => localStorage.getItem(BG_STORAGE_KEY) || null)
 
   const [{ headers, rows, widths, colHidden, showNumbers, title }, setState] = useState(() => {
+    const initLang = localStorage.getItem('appLanguage') || 'en'
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       try {
         const parsed = JSON.parse(saved)
         if (Array.isArray(parsed.headers) && parsed.headers.length > 0) {
           const cols = parsed.headers.length
-          const headers = parsed.headers.map((h) => (typeof h === 'string' ? h : ''))
+          const headers = parsed.headers.map((h) =>
+            translateSchedHeader(typeof h === 'string' ? h : '', initLang)
+          )
           const widths = Array.from({ length: cols }, (_, i) => {
             const w = parsed.widths?.[i]
             return typeof w === 'number' && w >= MIN_COL_WIDTH ? w : DEFAULT_COL_WIDTH
@@ -61,7 +67,7 @@ function SchedulePage() {
               widths,
               colHidden,
               showNumbers: parsed.showNumbers !== false,
-              title: parsed.title || 'Game Schedule',
+              title: translateSchedTitle(parsed.title || 'Game Schedule', initLang),
             }
           }
         }
@@ -70,12 +76,12 @@ function SchedulePage() {
       }
     }
     return {
-      headers: [...DEFAULT_HEADERS],
+      headers: DEFAULT_HEADERS.map(h => translateSchedHeader(h, initLang)),
       rows: Array.from({ length: 10 }, () => makeEmptyRow(DEFAULT_HEADERS.length)),
       widths: [...DEFAULT_WIDTHS],
       colHidden: Array.from({ length: DEFAULT_HEADERS.length }, () => false),
       showNumbers: true,
-      title: 'Game Schedule',
+      title: SCHED_TITLE[initLang] || 'Game Schedule',
     }
   })
 
@@ -93,14 +99,11 @@ function SchedulePage() {
 
   // Re-translate default headers and title when language changes
   useEffect(() => {
-    setState(prev => {
-      const newHeaders = prev.headers.map(h =>
-        SCHED_HEADER_DEFAULTS[h] ? t(SCHED_HEADER_DEFAULTS[h]) : h
-      )
-      const isDefaultTitle = prev.title === 'Game Schedule' || prev.title === 'Расписание игр'
-      const newTitle = isDefaultTitle ? t('schedule.defaultTitle') : prev.title
-      return { ...prev, headers: newHeaders, title: newTitle }
-    })
+    setState(prev => ({
+      ...prev,
+      headers: prev.headers.map(h => translateSchedHeader(h, lang)),
+      title: translateSchedTitle(prev.title, lang),
+    }))
   }, [lang])
 
   const handleBgUpload = (e) => {

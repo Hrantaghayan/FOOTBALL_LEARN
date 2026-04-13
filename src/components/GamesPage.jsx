@@ -6,19 +6,13 @@ import './GamesPage.css'
 
 const DEFAULT_HEADERS = ['Date', 'Home Team', 'Away Team', 'Score', 'Venue', 'Status']
 
-const GAMES_HEADER_DEFAULTS = {
-  'Date': 'games.header.date',
-  'Home Team': 'games.header.homeTeam',
-  'Away Team': 'games.header.awayTeam',
-  'Score': 'games.header.score',
-  'Venue': 'games.header.venue',
-  'Status': 'games.header.status',
-  'Дата': 'games.header.date',
-  'Хозяева': 'games.header.homeTeam',
-  'Гости': 'games.header.awayTeam',
-  'Счёт': 'games.header.score',
-  'Место': 'games.header.venue',
-  'Статус': 'games.header.status',
+const GAMES_TRANSLATIONS = {
+  en: { 'Date': 'Date', 'Home Team': 'Home Team', 'Away Team': 'Away Team', 'Score': 'Score', 'Venue': 'Venue', 'Status': 'Status', 'Дата': 'Date', 'Хозяева': 'Home Team', 'Гости': 'Away Team', 'Счёт': 'Score', 'Место': 'Venue', 'Статус': 'Status' },
+  ru: { 'Date': 'Дата', 'Home Team': 'Хозяева', 'Away Team': 'Гости', 'Score': 'Счёт', 'Venue': 'Место', 'Status': 'Статус', 'Дата': 'Дата', 'Хозяева': 'Хозяева', 'Гости': 'Гости', 'Счёт': 'Счёт', 'Место': 'Место', 'Статус': 'Статус' },
+}
+
+function translateGamesHeader(h, lang) {
+  return GAMES_TRANSLATIONS[lang]?.[h] ?? h
 }
 const DEFAULT_WIDTHS = [110, 200, 200, 120, 150, 140]
 const DEFAULT_COL_WIDTH = 150
@@ -69,13 +63,16 @@ function GamesPage() {
   const handleRemoveBg = () => setBgImage(null)
 
   const [{ headers, rows, widths, colHidden, showNumbers, showImages }, setState] = useState(() => {
+    const initLang = localStorage.getItem('appLanguage') || 'en'
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
       try {
         const parsed = JSON.parse(saved)
         if (Array.isArray(parsed.headers) && parsed.headers.length > 0) {
           const cols = parsed.headers.length
-          const headers = parsed.headers.map((h) => (typeof h === 'string' ? h : ''))
+          const headers = parsed.headers.map((h) =>
+            translateGamesHeader(typeof h === 'string' ? h : '', initLang)
+          )
           const widths = Array.from({ length: cols }, (_, i) => {
             const w = parsed.widths?.[i]
             return typeof w === 'number' && w >= MIN_COL_WIDTH ? w : DEFAULT_COL_WIDTH
@@ -110,7 +107,7 @@ function GamesPage() {
       }
     }
     return {
-      headers: [...DEFAULT_HEADERS],
+      headers: DEFAULT_HEADERS.map(h => translateGamesHeader(h, initLang)),
       rows: Array.from({ length: 12 }, () => makeEmptyRow(DEFAULT_HEADERS.length)),
       widths: [...DEFAULT_WIDTHS],
       colHidden: Array.from({ length: DEFAULT_HEADERS.length }, () => false),
@@ -130,9 +127,7 @@ function GamesPage() {
   useEffect(() => {
     setState(prev => ({
       ...prev,
-      headers: prev.headers.map(h =>
-        GAMES_HEADER_DEFAULTS[h] ? t(GAMES_HEADER_DEFAULTS[h]) : h
-      ),
+      headers: prev.headers.map(h => translateGamesHeader(h, lang)),
     }))
   }, [lang])
 
