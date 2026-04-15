@@ -156,6 +156,9 @@ function GamesPage() {
     e.stopPropagation()
     const startX = e.clientX
     const startWidth = widths[colIdx]
+    const pointerId = e.pointerId
+    const target = e.currentTarget
+    try { target.setPointerCapture?.(pointerId) } catch { /* ignore */ }
 
     const onMove = (moveEvent) => {
       const delta = moveEvent.clientX - startX
@@ -168,14 +171,17 @@ function GamesPage() {
     }
 
     const onUp = () => {
-      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onUp)
+      target.removeEventListener('pointermove', onMove)
+      target.removeEventListener('pointerup', onUp)
+      target.removeEventListener('pointercancel', onUp)
+      try { target.releasePointerCapture?.(pointerId) } catch { /* ignore */ }
       document.body.style.cursor = ''
       document.body.style.userSelect = ''
     }
 
-    document.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseup', onUp)
+    target.addEventListener('pointermove', onMove)
+    target.addEventListener('pointerup', onUp)
+    target.addEventListener('pointercancel', onUp)
     document.body.style.cursor = 'col-resize'
     document.body.style.userSelect = 'none'
   }
@@ -437,7 +443,7 @@ function GamesPage() {
                       </button>
                       <span
                         className="col-resize-handle no-print"
-                        onMouseDown={(e) => startResize(colIdx, e)}
+                        onPointerDown={(e) => startResize(colIdx, e)}
                         title="Drag to resize column"
                       />
                     </div>

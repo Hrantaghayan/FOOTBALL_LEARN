@@ -11,7 +11,18 @@ const MIN_COL_WIDTH = 50
 const STORAGE_KEY = 'footballScheduleTable'
 const BG_STORAGE_KEY = 'footballScheduleBg'
 
-const makeEmptyRow = (cols) => Array.from({ length: cols }, () => '')
+const IMAGE_COL_INDICES = new Set([1, 3])
+
+const makeEmptyCell = () => ({ text: '', image: null })
+const makeEmptyRow = (cols) => Array.from({ length: cols }, makeEmptyCell)
+
+const fileToDataUrl = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
 
 // Translates a header/title to the given language, returns original if not a known default
 const SCHED_TRANSLATIONS = {
@@ -32,13 +43,15 @@ function SchedulePage() {
   const navigate = useNavigate()
   const { t, lang } = useLanguage()
   const bgInputRef = useRef(null)
+  const fileInputRef = useRef(null)
+  const pendingCellRef = useRef(null)
   const tableWrapperRef = useRef(null)
   const pageRef = useRef(null)
   const toolbarRef = useRef(null)
 
   const [bgImage, setBgImage] = useState(() => localStorage.getItem(BG_STORAGE_KEY) || null)
 
-  const [{ headers, rows, widths, colHidden, showNumbers, title }, setState] = useState(() => {
+  const [{ headers, rows, widths, colHidden, showNumbers, showImages, title }, setState] = useState(() => {
     const initLang = localStorage.getItem('appLanguage') || 'en'
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) {
@@ -56,9 +69,14 @@ function SchedulePage() {
           const colHidden = Array.from({ length: cols }, (_, i) => Boolean(parsed.colHidden?.[i]))
           const rawRows = Array.isArray(parsed.rows) ? parsed.rows : []
           const rows = rawRows.map((row) =>
-            Array.from({ length: cols }, (_, c) =>
-              typeof row?.[c] === 'string' ? row[c] : ''
-            )
+            Array.from({ length: cols }, (_, c) => {
+              const cell = row?.[c]
+              if (cell && typeof cell === 'object') {
+                return { text: cell.text ?? '', image: cell.image ?? null }
+              }
+              if (typeof cell === 'string') return { text: cell, image: null }
+              return makeEmptyCell()
+            })
           )
           if (rows.length) {
             return {
@@ -67,6 +85,7 @@ function SchedulePage() {
               widths,
               colHidden,
               showNumbers: parsed.showNumbers !== false,
+              showImages: parsed.showImages !== false,
               title: translateSchedTitle(parsed.title || 'Game Schedule', initLang),
             }
           }
@@ -81,13 +100,14 @@ function SchedulePage() {
       widths: [...DEFAULT_WIDTHS],
       colHidden: Array.from({ length: DEFAULT_HEADERS.length }, () => false),
       showNumbers: true,
+      showImages: true,
       title: SCHED_TITLE[initLang] || 'Game Schedule',
     }
   })
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ headers, rows, widths, colHidden, showNumbers, title }))
-  }, [headers, rows, widths, colHidden, showNumbers, title])
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ headers, rows, widths, colHidden, showNumbers, showImages, title }))
+  }, [headers, rows, widths, colHidden, showNumbers, showImages, title])
 
   useEffect(() => {
     if (bgImage) {
@@ -118,6 +138,7 @@ function SchedulePage() {
   const handleRemoveBg = () => setBgImage(null)
 
   const toggleNumbers = () => setState((prev) => ({ ...prev, showNumbers: !prev.showNumbers }))
+  const toggleImages = () => setState((prev) => ({ ...prev, showImages: !prev.showImages }))
 
   const hideColumn = (colIdx) => {
     setState((prev) => {
@@ -138,6 +159,9 @@ function SchedulePage() {
     e.stopPropagation()
     const startX = e.clientX
     const startWidth = widths[colIdx]
+    const pointerId = e.pointerId
+    const target = e.currentTarget
+    try { target.setPointerCapture?.(pointerId) } catch { /* ignore */ }
 
     const onMove = (moveEvent) => {
       const delta = moveEvent.clientX - startX
@@ -150,14 +174,17 @@ function SchedulePage() {
     }
 
     const onUp = () => {
-      document.removeEventListener('mousemove', onMove)
-      document.removeEventListener('mouseup', onUp)
+      target.removeEventListener('pointermove', onMove)
+      target.removeEventListener('pointerup', onUp)
+      target.removeEventListener('pointercancel', onUp)
+      try { target.releasePointerCapture?.(pointerId) } catch { /* ignore */ }
       document.body.style.cursor = ''
       document.body.style.userSelect = ''
     }
 
-    document.addEventListener('mousemove', onMove)
-    document.addEventListener('mouseup', onUp)
+    target.addEventListener('pointermove', onMove)
+    target.addEventListener('pointerup', onUp)
+    target.addEventListener('pointercancel', onUp)
     document.body.style.cursor = 'col-resize'
     document.body.style.userSelect = 'none'
   }
@@ -172,8 +199,35 @@ function SchedulePage() {
 
   const handleCellChange = (rowIdx, colIdx, value) => {
     setState((prev) => {
-      const nextRows = prev.rows.map((row) => [...row])
-      nextRows[rowIdx][colIdx] = value
+      const nextRows = prev.rows.map((row) => row.map((cell) => ({ ...cell })))
+      nextRows[rowIdx][colIdx].text = value
+      return { ...prev, rows: nextRows }
+    })
+  }
+
+  const handleOpenImagePicker = (rowIdx, colIdx) => {
+    pendingCellRef.current = { rowIdx, colIdx }
+    fileInputRef.current?.click()
+  }
+
+  const handleImageSelected = async (e) => {
+    const file = e.target.files?.[0]
+    const target = pendingCellRef.current
+    e.target.value = ''
+    pendingCellRef.current = null
+    if (!file || !target) return
+    const dataUrl = await fileToDataUrl(file)
+    setState((prev) => {
+      const nextRows = prev.rows.map((row) => row.map((cell) => ({ ...cell })))
+      nextRows[target.rowIdx][target.colIdx].image = dataUrl
+      return { ...prev, rows: nextRows }
+    })
+  }
+
+  const handleRemoveImage = (rowIdx, colIdx) => {
+    setState((prev) => {
+      const nextRows = prev.rows.map((row) => row.map((cell) => ({ ...cell })))
+      nextRows[rowIdx][colIdx].image = null
       return { ...prev, rows: nextRows }
     })
   }
@@ -202,7 +256,7 @@ function SchedulePage() {
       headers: [...prev.headers, t('schedule.column', { num: prev.headers.length + 1 })],
       widths: [...prev.widths, DEFAULT_COL_WIDTH],
       colHidden: [...prev.colHidden, false],
-      rows: prev.rows.map((row) => [...row, '']),
+      rows: prev.rows.map((row) => [...row, makeEmptyCell()]),
     }))
   }
 
@@ -226,6 +280,7 @@ function SchedulePage() {
       widths: [...DEFAULT_WIDTHS],
       colHidden: Array.from({ length: DEFAULT_HEADERS.length }, () => false),
       showNumbers: true,
+      showImages: true,
       title: t('schedule.defaultTitle'),
     })
   }
@@ -309,6 +364,9 @@ function SchedulePage() {
         <button className="sched-btn toggle" onClick={toggleNumbers}>
           {showNumbers ? t('schedule.hideNumbers') : t('schedule.showNumbers')}
         </button>
+        <button className="sched-btn toggle" onClick={toggleImages}>
+          {showImages ? t('schedule.hideImages') : t('schedule.showImages')}
+        </button>
         {hasHiddenColumns && (
           <button className="sched-btn toggle" onClick={showAllColumns}>{t('schedule.showHiddenCols')}</button>
         )}
@@ -324,6 +382,7 @@ function SchedulePage() {
       </div>
 
       <input ref={bgInputRef} type="file" accept="image/*" hidden onChange={handleBgUpload} />
+      <input ref={fileInputRef} type="file" accept="image/*" hidden onChange={handleImageSelected} />
 
       <div className="schedule-table-wrapper" ref={tableWrapperRef}>
         <input
@@ -365,7 +424,7 @@ function SchedulePage() {
                       >×</button>
                       <span
                         className="sched-resize-handle no-print"
-                        onMouseDown={(e) => startResize(colIdx, e)}
+                        onPointerDown={(e) => startResize(colIdx, e)}
                         title="Drag to resize"
                       />
                     </div>
@@ -381,12 +440,37 @@ function SchedulePage() {
                 {row.map((cell, colIdx) =>
                   colHidden[colIdx] ? null : (
                     <td key={colIdx}>
-                      <input
-                        type="text"
-                        value={cell}
-                        onChange={(e) => handleCellChange(rowIdx, colIdx, e.target.value)}
-                        placeholder=""
-                      />
+                      <div className="sched-cell-content">
+                        {IMAGE_COL_INDICES.has(colIdx) && showImages && (
+                          cell.image ? (
+                            <div className="sched-cell-image-wrap">
+                              <img src={cell.image} alt="" className="sched-cell-image" />
+                              <button
+                                className="sched-cell-image-remove no-print"
+                                onClick={() => handleRemoveImage(rowIdx, colIdx)}
+                                aria-label="Remove image"
+                              >
+                                ×
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              className="sched-cell-image-add no-print"
+                              onClick={() => handleOpenImagePicker(rowIdx, colIdx)}
+                              aria-label="Upload image"
+                              title="Upload image"
+                            >
+                              +
+                            </button>
+                          )
+                        )}
+                        <input
+                          type="text"
+                          value={cell.text}
+                          onChange={(e) => handleCellChange(rowIdx, colIdx, e.target.value)}
+                          placeholder=""
+                        />
+                      </div>
                     </td>
                   )
                 )}
