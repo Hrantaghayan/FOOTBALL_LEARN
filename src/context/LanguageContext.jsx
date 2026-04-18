@@ -41,6 +41,7 @@ const translations = {
     'matchDay.clear': 'Clear',
     'matchDay.teamPlaceholder': 'Team name',
     'matchDay.uploadLogoTitle': 'Upload team logo',
+    'matchDay.dateTimePlaceholder': 'Date & time',
 
     // Modal
     'modal.editLeague': 'Edit League',
@@ -161,6 +162,7 @@ const translations = {
     'matchDay.clear': 'Очистить',
     'matchDay.teamPlaceholder': 'Название команды',
     'matchDay.uploadLogoTitle': 'Загрузить логотип команды',
+    'matchDay.dateTimePlaceholder': 'Дата и время',
 
     // Modal
     'modal.editLeague': 'Редактировать лигу',

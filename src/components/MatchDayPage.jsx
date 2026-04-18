@@ -8,9 +8,14 @@ const BG_STORAGE_KEY = 'footballMatchDayBg'
 const BG_RATIO_STORAGE_KEY = 'footballMatchDayBgRatio'
 const DATA_STORAGE_KEY = 'footballMatchDayData'
 
+const MATCH_COUNT = 2
 const makeEmptyTeam = () => ({ logo: null, name: '' })
 const makeEmptyMatches = () =>
-  Array.from({ length: 3 }, () => ({ home: makeEmptyTeam(), away: makeEmptyTeam() }))
+  Array.from({ length: MATCH_COUNT }, () => ({
+    home: makeEmptyTeam(),
+    away: makeEmptyTeam(),
+    dateTime: '',
+  }))
 
 function MatchDayPage() {
   const navigate = useNavigate()
@@ -33,7 +38,13 @@ function MatchDayPage() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved)
-        if (Array.isArray(parsed) && parsed.length === 3) return parsed
+        if (Array.isArray(parsed) && parsed.length === MATCH_COUNT) {
+          return parsed.map((m) => ({
+            home: m?.home ?? makeEmptyTeam(),
+            away: m?.away ?? makeEmptyTeam(),
+            dateTime: typeof m?.dateTime === 'string' ? m.dateTime : '',
+          }))
+        }
       } catch {
         // ignore
       }
@@ -96,7 +107,7 @@ function MatchDayPage() {
     if (!file || !target) return
     const dataUrl = await fileToDataUrl(file)
     setMatches((prev) => {
-      const next = prev.map((m) => ({ home: { ...m.home }, away: { ...m.away } }))
+      const next = prev.map((m) => ({ home: { ...m.home }, away: { ...m.away }, dateTime: m.dateTime }))
       next[target.matchIdx][target.side].logo = dataUrl
       return next
     })
@@ -104,7 +115,7 @@ function MatchDayPage() {
 
   const handleRemoveLogo = (matchIdx, side) => {
     setMatches((prev) => {
-      const next = prev.map((m) => ({ home: { ...m.home }, away: { ...m.away } }))
+      const next = prev.map((m) => ({ home: { ...m.home }, away: { ...m.away }, dateTime: m.dateTime }))
       next[matchIdx][side].logo = null
       return next
     })
@@ -112,8 +123,16 @@ function MatchDayPage() {
 
   const handleNameChange = (matchIdx, side, value) => {
     setMatches((prev) => {
-      const next = prev.map((m) => ({ home: { ...m.home }, away: { ...m.away } }))
+      const next = prev.map((m) => ({ home: { ...m.home }, away: { ...m.away }, dateTime: m.dateTime }))
       next[matchIdx][side].name = value
+      return next
+    })
+  }
+
+  const handleDateTimeChange = (matchIdx, value) => {
+    setMatches((prev) => {
+      const next = prev.map((m) => ({ home: { ...m.home }, away: { ...m.away }, dateTime: m.dateTime }))
+      next[matchIdx].dateTime = value
       return next
     })
   }
@@ -266,17 +285,27 @@ function MatchDayPage() {
           <div className="md-title-line md-title-football">FOOTBALL</div>
           <div className="md-title-line md-title-match">MATCH</div>
           <div className="md-title-line md-title-day">DAY</div>
+          <div className="md-title-league">AAFL LEAGUE</div>
         </div>
 
         <div className="md-matches">
-          {matches.map((_, idx) => (
+          {matches.map((match, idx) => (
             <div className="md-match-row" key={idx}>
               <div className="md-match-corner tl" />
               <div className="md-match-corner tr" />
               <div className="md-match-corner bl" />
               <div className="md-match-corner br" />
               {renderTeamSlot(idx, 'home')}
-              <div className="md-vs">VS</div>
+              <div className="md-center">
+                <div className="md-vs">VS</div>
+                <input
+                  className="md-datetime"
+                  type="text"
+                  value={match.dateTime}
+                  onChange={(e) => handleDateTimeChange(idx, e.target.value)}
+                  placeholder={t('matchDay.dateTimePlaceholder')}
+                />
+              </div>
               {renderTeamSlot(idx, 'away')}
             </div>
           ))}
