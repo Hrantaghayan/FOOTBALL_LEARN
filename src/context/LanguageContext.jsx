@@ -24,6 +24,8 @@ const translations = {
     'app.games': 'Games',
     'app.createSchedule': 'Create Game Schedule',
     'app.matchDay': 'Match Day',
+    'app.assistants': 'Assistants',
+    'app.scorers': 'Scorers',
 
     // MatchDayPage
     'matchDay.back': 'Back',
@@ -121,6 +123,35 @@ const translations = {
     'schedule.titlePlaceholder': 'Schedule Title',
     'schedule.defaultTitle': 'Game Schedule',
     'schedule.column': 'Col {num}',
+
+    // Stats tables (Assistants / Scorers) — shared toolbar
+    'stats.back': 'Back',
+    'stats.addRow': '+ Row',
+    'stats.removeRow': '− Row',
+    'stats.addColumn': '+ Column',
+    'stats.removeColumn': '− Column',
+    'stats.hideNumbers': 'Hide #',
+    'stats.showNumbers': 'Show #',
+    'stats.hideImages': 'Hide Images',
+    'stats.showImages': 'Show Images',
+    'stats.showHiddenCols': 'Show Hidden Cols',
+    'stats.print': 'Print / PDF',
+    'stats.snapshot': 'Snapshot',
+    'stats.changeBg': 'Change BG',
+    'stats.uploadBg': 'Upload BG',
+    'stats.removeBg': 'Remove BG',
+    'stats.clear': 'Clear',
+    'stats.column': 'Col {num}',
+
+    'assistants.header.player': 'Player',
+    'assistants.header.team': 'Team',
+    'assistants.header.count': 'Assists',
+    'assistants.defaultTitle': 'Top Assistants',
+
+    'scorers.header.player': 'Player',
+    'scorers.header.team': 'Team',
+    'scorers.header.count': 'Goals',
+    'scorers.defaultTitle': 'Top Scorers',
   },
   ru: {
     // Login
@@ -145,6 +176,8 @@ const translations = {
     'app.games': 'Игры',
     'app.createSchedule': 'Создать расписание',
     'app.matchDay': 'День матча',
+    'app.assistants': 'Ассистенты',
+    'app.scorers': 'Бомбардиры',
 
     // MatchDayPage
     'matchDay.back': 'Назад',
@@ -242,6 +275,35 @@ const translations = {
     'schedule.titlePlaceholder': 'Название расписания',
     'schedule.defaultTitle': 'Расписание игр',
     'schedule.column': 'Ст {num}',
+
+    // Stats tables (Ассистенты / Бомбардиры) — общий тулбар
+    'stats.back': 'Назад',
+    'stats.addRow': '+ Строка',
+    'stats.removeRow': '− Строка',
+    'stats.addColumn': '+ Столбец',
+    'stats.removeColumn': '− Столбец',
+    'stats.hideNumbers': 'Скрыть #',
+    'stats.showNumbers': 'Показать #',
+    'stats.hideImages': 'Скрыть фото',
+    'stats.showImages': 'Показать фото',
+    'stats.showHiddenCols': 'Показать скрытые',
+    'stats.print': 'Печать / PDF',
+    'stats.snapshot': 'Снимок',
+    'stats.changeBg': 'Сменить фон',
+    'stats.uploadBg': 'Загрузить фон',
+    'stats.removeBg': 'Убрать фон',
+    'stats.clear': 'Очистить',
+    'stats.column': 'Ст {num}',
+
+    'assistants.header.player': 'Игрок',
+    'assistants.header.team': 'Команда',
+    'assistants.header.count': 'Ассисты',
+    'assistants.defaultTitle': 'Лучшие ассистенты',
+
+    'scorers.header.player': 'Игрок',
+    'scorers.header.team': 'Команда',
+    'scorers.header.count': 'Голы',
+    'scorers.defaultTitle': 'Лучшие бомбардиры',
   },
 }
 

@@ -8,6 +8,8 @@ import SecondPage from './components/SecondPage'
 import GamesPage from './components/GamesPage'
 import SchedulePage from './components/SchedulePage'
 import MatchDayPage from './components/MatchDayPage'
+import AssistantsPage from './components/AssistantsPage'
+import ScorersPage from './components/ScorersPage'
 import LoginModal from './components/LoginModal'
 import { useLanguage } from './context/LanguageContext'
 import './App.css'
@@ -131,6 +133,12 @@ function MainPage() {
           <button className="add-more-btn match-day-btn" onClick={() => navigate('/match-day')}>
             {t('app.matchDay')}
           </button>
+          <button className="add-more-btn" onClick={() => navigate('/assistants')}>
+            {t('app.assistants')}
+          </button>
+          <button className="add-more-btn" onClick={() => navigate('/scorers')}>
+            {t('app.scorers')}
+          </button>
         </div>
       </div>
     </div>
@@ -147,6 +155,8 @@ function App() {
         <Route path="/games" element={<GamesPage />} />
         <Route path="/schedule" element={<SchedulePage />} />
         <Route path="/match-day" element={<MatchDayPage />} />
+        <Route path="/assistants" element={<AssistantsPage />} />
+        <Route path="/scorers" element={<ScorersPage />} />
       </Routes>
     </>
   )
