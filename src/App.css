@@ -62,6 +62,14 @@ body {
   box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5) !important;
 }
 
+.match-day-btn {
+  background: linear-gradient(135deg, #f7b733, #fc4a1a);
+}
+
+.match-day-btn:hover {
+  box-shadow: 0 5px 20px rgba(252, 74, 26, 0.5) !important;
+}
+
 .reset-btn {
   background: linear-gradient(135deg, #e74c3c, #c0392b);
   color: white;

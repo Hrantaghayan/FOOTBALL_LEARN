@@ -23,6 +23,24 @@ const translations = {
     'app.secondPage': 'Go to Second Page',
     'app.games': 'Games',
     'app.createSchedule': 'Create Game Schedule',
+    'app.matchDay': 'Match Day',
+
+    // MatchDayPage
+    'matchDay.back': 'Back',
+    'matchDay.uploadBg': 'Upload Background',
+    'matchDay.changeBg': 'Change Background',
+    'matchDay.removeBg': 'Remove Background',
+    'matchDay.bgTips': 'Background Tips',
+    'matchDay.bgTipsTitle': 'Background image recommendations',
+    'matchDay.tip1': 'Use a dark, moody image so the white/yellow title and team logos stay readable.',
+    'matchDay.tip2': 'Portrait (9:16) or square images work best — landscape photos may get cropped.',
+    'matchDay.tip3': 'Minimum resolution 1080×1920 for a crisp snapshot on social media.',
+    'matchDay.tip4': 'Avoid busy patterns behind the match boxes — blur or solid zones read better.',
+    'matchDay.tip5': 'Stadium, pitch, or abstract dark textures pair well with the yellow accents.',
+    'matchDay.snapshot': 'Snapshot',
+    'matchDay.clear': 'Clear',
+    'matchDay.teamPlaceholder': 'Team name',
+    'matchDay.uploadLogoTitle': 'Upload team logo',
 
     // Modal
     'modal.editLeague': 'Edit League',
@@ -125,6 +143,24 @@ const translations = {
     'app.secondPage': 'На вторую страницу',
     'app.games': 'Игры',
     'app.createSchedule': 'Создать расписание',
+    'app.matchDay': 'День матча',
+
+    // MatchDayPage
+    'matchDay.back': 'Назад',
+    'matchDay.uploadBg': 'Загрузить фон',
+    'matchDay.changeBg': 'Сменить фон',
+    'matchDay.removeBg': 'Убрать фон',
+    'matchDay.bgTips': 'Советы по фону',
+    'matchDay.bgTipsTitle': 'Рекомендации для фонового изображения',
+    'matchDay.tip1': 'Выберите тёмное изображение — белый заголовок и жёлтые акценты останутся читаемыми.',
+    'matchDay.tip2': 'Лучше всего подходит вертикальное (9:16) или квадратное фото; горизонтальное может обрезаться.',
+    'matchDay.tip3': 'Минимальное разрешение 1080×1920 для чёткого снимка в соцсетях.',
+    'matchDay.tip4': 'Избегайте пёстрых узоров за блоками матчей — размытие или однотонные зоны смотрятся лучше.',
+    'matchDay.tip5': 'Стадион, газон или тёмная абстрактная текстура отлично сочетаются с жёлтыми акцентами.',
+    'matchDay.snapshot': 'Снимок',
+    'matchDay.clear': 'Очистить',
+    'matchDay.teamPlaceholder': 'Название команды',
+    'matchDay.uploadLogoTitle': 'Загрузить логотип команды',
 
     // Modal
     'modal.editLeague': 'Редактировать лигу',

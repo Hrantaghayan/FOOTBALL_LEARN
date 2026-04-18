@@ -7,6 +7,7 @@ import PrintButton from './components/PrintButton'
 import SecondPage from './components/SecondPage'
 import GamesPage from './components/GamesPage'
 import SchedulePage from './components/SchedulePage'
+import MatchDayPage from './components/MatchDayPage'
 import LoginModal from './components/LoginModal'
 import { useLanguage } from './context/LanguageContext'
 import './App.css'
@@ -127,6 +128,9 @@ function MainPage() {
           <button className="add-more-btn schedule-btn" onClick={() => navigate('/schedule')}>
             {t('app.createSchedule')}
           </button>
+          <button className="add-more-btn match-day-btn" onClick={() => navigate('/match-day')}>
+            {t('app.matchDay')}
+          </button>
         </div>
       </div>
     </div>
@@ -142,6 +146,7 @@ function App() {
         <Route path="/second" element={<SecondPage />} />
         <Route path="/games" element={<GamesPage />} />
         <Route path="/schedule" element={<SchedulePage />} />
+        <Route path="/match-day" element={<MatchDayPage />} />
       </Routes>
     </>
   )
