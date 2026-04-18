@@ -285,7 +285,6 @@ function MatchDayPage() {
           <div className="md-title-line md-title-football">FOOTBALL</div>
           <div className="md-title-line md-title-match">MATCH</div>
           <div className="md-title-line md-title-day">DAY</div>
-          <div className="md-title-league">AAFL LEAGUE</div>
         </div>
 
         <div className="md-matches">
